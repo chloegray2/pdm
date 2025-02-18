@@ -1,26 +1,29 @@
 let characters = [];
 let spriteSheets = [];
-let numCharacters = 3; // At least three different characters
+let numCharacters = 3; 
 let frameWidth = 80;
 let frameHeight = 80;
-let numFrames = 8; // Assuming 8 frames for walking
-let scaleFactor = 1.5;
+let numFrames = 8; 
+let scaleFactor = 2.75;
 
 function preload() {
-  // Load sprite sheets (update these paths with correct file URLs)
-  spriteSheets.push(loadImage("assets/character1.png")); // Replace with actual sprite sheet paths
+  spriteSheets.push(loadImage("assets/character1.png")); 
   spriteSheets.push(loadImage("assets/character2.png"));
   spriteSheets.push(loadImage("assets/character3.png"));
 }
 
 function setup() {
   createCanvas(800, 400);
-  for (let i = 0; i < numCharacters; i++) {
-    let x = random(width - frameWidth);
-    let y = height / 2 + i * 30; // Spread them out
-    characters.push(new Character(x, y, spriteSheets[i]));
-  }
+  
+  addCharacter(100, 200, spriteSheets[0]);
+  addCharacter(300, 250, spriteSheets[1]);
+  addCharacter(500, 220, spriteSheets[2]);
 }
+
+function addCharacter(x, y, spriteSheet) {
+  characters.push(new Character(x, y, spriteSheet));
+}
+
 
 function draw() {
   background(220);
@@ -38,30 +41,39 @@ class Character {
     this.currentFrame = 0;
     this.frameDelay = 5;
     this.frameCounter = 0;
-    this.direction = 1; // 1 for right, -1 for left
+    this.direction = 1;
+    this.moving = false;
   }
 
   update() {
+    this.moving = false;
+    
     if (keyIsDown(LEFT_ARROW)) {
       this.x -= 2;
       this.direction = -1;
+      this.moving = true;
     }
     if (keyIsDown(RIGHT_ARROW)) {
       this.x += 2;
       this.direction = 1;
+      this.moving = true;
     }
 
-    this.frameCounter++;
-    if (this.frameCounter >= this.frameDelay) {
-      this.currentFrame = (this.currentFrame + 1) % numFrames;
-      this.frameCounter = 0;
+    if (this.moving) {
+      this.frameCounter++;
+      if (this.frameCounter >= this.frameDelay) {
+        this.currentFrame = (this.currentFrame + 1) % numFrames;
+        this.frameCounter = 0;
+      }
+    } else {
+      this.currentFrame = 0;
     }
   }
 
   display() {
     push();
     translate(this.x, this.y);
-    scale(this.direction * scaleFactor, scaleFactor);
+    scale(this.direction, 1);
     image(
       this.spriteSheet,
       -frameWidth / 2,
@@ -76,3 +88,4 @@ class Character {
     pop();
   }
 }
+
