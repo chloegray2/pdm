@@ -1,64 +1,68 @@
-let samples;
-let buttons = [];
-let startContextButton;
-let sampleKeys = ["sample1", "sample2", "sample3", "sample4"];
+touchEnded.Transport.bpm.value = 120;
+let button;
+let sampler;
 
-function preload() {
-  // Load audio samples using Tone.Players with an onload callback.
-  samples = new Tone.Players({
-    sample1: "assets/sample1.mp3",
-    sample2: "assets/sample2.mp3",
-    sample3: "assets/sample3.mp3",
-    sample4: "assets/sample4.mp3"
-  }, () => {
-    console.log("Samples loaded!");
-  }).toDestination();
-}
+function setup(){
+  sampler = new Tone.Players({
+    "sample1": "sample1.mp3",
+    "sample2": "sample2.mp3",
+    "sample3": "sample3.mp3",
+    "sample4": "sample4.mp3",
+    "sample5": "sample5.mp3",
+  }).toMaster();
 
-function setup() {
-  createCanvas(400, 300);
-  background(220);
+  button1 = createButton('sample 1');
+  button1.position(10, 10);
+  button1.mousePressed(playSample1);
 
-  // Display title and instructions
-  textAlign(CENTER, CENTER);
-  textSize(18);
-  fill(0);
-  text("Simple Sampler (Tone.js)", width / 2, 30);
-  textSize(12);
-  text("Click buttons to play samples.", width / 2, 50);
+  function playSample1(){
+    sampler.get('sample1').start()
+  }
 
-  // Button to start Tone.js audio context
-  startContextButton = createButton("Start Audio Context");
-  startContextButton.position(10, 10);
-  startContextButton.mousePressed(startAudioContext);
+  button2 = createButton('sample 2');
+  button2.position(10, 30);
+  button2.mousePressed(playSample2);
 
-  // Create buttons for each sample
-  for (let i = 0; i < sampleKeys.length; i++) {
-    let btn = createButton("Play Sample " + (i + 1));
-    btn.position(20, 80 + i * 40);
-    btn.mousePressed(() => playSample(sampleKeys[i]));
-    buttons.push(btn);
+  function playSample2(){
+    sampler.get('sample2').start()
+  }
+
+  button3 = createButton('sample 3');
+  button3.position(10, 50);
+  button3.mousePressed(playSample3);
+
+  function playSample3(){
+    sampler.get('sample3').start()
+  }
+
+  button4 = createButton('sample 4');
+  button4.position(10, 70);
+  button4.mousePressed(playSample4);
+
+  function playSample4(){
+    sampler.get('sample4').start()
+  }
+
+  button5 = createButton('sample 5');
+  button5.position(10, 90);
+  button5.mousePressed(playSample5);
+
+  function playSample5(){
+    sampler.get('sample5').start()
+  }
+
+  slider = createSlider(0, 1, 0);
+  slider.position(70, 140);
+  slider.style('width', '15px');
+
+  function effect(){
+    if (slider.value() == 1){
+      new Tone.Reverb(2).toMaster();
+    }
   }
 }
 
-function draw() {
-  background(220);
-  textAlign(CENTER, CENTER);
-  textSize(18);
-  fill(0);
-  text("Simple Sampler (Tone.js)", width / 2, 30);
-  textSize(12);
-  text("Click buttons to play samples.", width / 2, 50);
-}
-
-function startAudioContext() {
-  // Start Tone.js audio context on user gesture
-  Tone.start().then(() => {
-    console.log("Audio Context Started");
-  }).catch(e => console.error(e));
-}
-
-function playSample(key) {
-  // Updated method to retrieve the sample
-  samples.get(key).start();
+function draw(){
+  createCanvas(400, 400);
+  text("reverb", 11, 150)
 }
